@@ -12,530 +12,291 @@
 <link rel="apple-touch-icon" sizes="167x167" href="/icon-167x167.png">
 <link rel="apple-touch-icon" sizes="152x152" href="/icon-152x152.png">
 <link rel="manifest" href="/manifest.json">
-<title>Video Stretch 2732×2048</title>
+<title>Video Stretch 2732x2048</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
-
-:root {
-–bg: #0a0a0f;
-–surface: #111118;
-–card: #16161f;
-–accent: #7fff6e;
-–accent2: #6e8fff;
-–text: #e8e8f0;
-–muted: #555566;
-–border: #222233;
-}
-
-- { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-body {
-background: var(–bg);
-color: var(–text);
-font-family: ‘Syne’, sans-serif;
-min-height: 100dvh;
-display: flex;
-flex-direction: column;
-align-items: center;
-padding: 48px 18px 80px;
-overflow-x: hidden;
-}
-
-body::before {
-content: ‘’;
-position: fixed; inset: 0;
-background:
-radial-gradient(ellipse 60% 40% at 15% 20%, rgba(110,143,255,.09) 0%, transparent 65%),
-radial-gradient(ellipse 50% 35% at 85% 80%, rgba(127,255,110,.07) 0%, transparent 65%);
-pointer-events: none; z-index: 0;
-}
-.grid-bg {
-position: fixed; inset: 0;
-background-image:
-linear-gradient(rgba(255,255,255,.013) 1px, transparent 1px),
-linear-gradient(90deg, rgba(255,255,255,.013) 1px, transparent 1px);
-background-size: 44px 44px;
-pointer-events: none; z-index: 0;
-}
-
-.wrap {
-position: relative; z-index: 1;
-width: 100%; max-width: 640px;
-display: flex; flex-direction: column; gap: 18px;
-}
-
-/* ── HEADER ── */
-header { text-align: center; padding: 6px 0 10px; }
-.badge {
-display: inline-flex; align-items: center; gap: 6px;
-background: rgba(127,255,110,.07); border: 1px solid rgba(127,255,110,.18);
-border-radius: 100px; padding: 5px 14px;
-font-size: 11px; font-family: ‘Space Mono’, monospace;
-color: var(–accent); letter-spacing: .08em; margin-bottom: 16px;
-}
-.badge::before { content: ‘●’; font-size: 7px; }
-h1 {
-font-size: clamp(34px, 8vw, 54px); font-weight: 800;
-line-height: 1.0; letter-spacing: -.025em;
-background: linear-gradient(150deg, #ffffff 0%, rgba(255,255,255,.5) 100%);
--webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-h1 span {
-background: linear-gradient(135deg, var(–accent), var(–accent2));
--webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.subtitle { margin-top: 9px; font-size: 13px; color: var(–muted); font-family: ‘Space Mono’, monospace; }
-
-/* ── CARD ── */
-.card {
-background: var(–card); border: 1px solid var(–border);
-border-radius: 20px; padding: 20px; position: relative; overflow: hidden;
-}
-.card::before {
-content: ‘’; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
-}
-
-/* ── FILE PICKER ── */
-.pick-btn {
-width: 100%; background: none; border: 2px dashed var(–border);
-border-radius: 14px; padding: 38px 20px; cursor: pointer;
-transition: all .22s; display: flex; flex-direction: column;
-align-items: center; gap: 10px; color: var(–text);
-}
-.pick-btn:active { border-color: var(–accent); background: rgba(127,255,110,.035); transform: scale(.99); }
-.pick-icon {
-width: 58px; height: 58px;
-background: linear-gradient(135deg, rgba(110,143,255,.18), rgba(127,255,110,.15));
-border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 26px;
-}
-.pick-label { font-size: 17px; font-weight: 700; }
-.pick-hint { font-size: 12px; color: var(–muted); font-family: ‘Space Mono’, monospace; }
-#fileInput { display: none; }
-
-/* ── VIDEO PREVIEW ── */
-.preview-box { display: none; margin-top: 14px; border-radius: 11px; overflow: hidden; background: #000; }
-.preview-box video { width: 100%; max-height: 185px; object-fit: contain; display: block; }
-
-/* ── INFO CHIPS ── */
-.chips { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 12px; }
-.chip { background: var(–surface); border: 1px solid var(–border); border-radius: 10px; padding: 11px 13px; }
-.chip-label { font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: var(–muted); font-family: ‘Space Mono’, monospace; margin-bottom: 3px; }
-.chip-val { font-size: 14px; font-weight: 700; font-family: ‘Space Mono’, monospace; }
-.chip-val.green { color: var(–accent); }
-
-/* ── PROGRESS ── */
-.prog-card { display: none; }
-.prog-label { font-size: 12px; color: var(–muted); font-family: ‘Space Mono’, monospace; text-align: center; margin-bottom: 9px; }
-.prog-track { height: 5px; background: var(–surface); border-radius: 100px; overflow: hidden; }
-.prog-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(–accent2), var(–accent)); border-radius: 100px; transition: width .25s; }
-
-/* ── STATUS ── */
-.status { display: none; border-radius: 11px; padding: 12px 15px; font-size: 12px; font-family: ‘Space Mono’, monospace; text-align: center; }
-.status.ok { background: rgba(127,255,110,.06); border: 1px solid rgba(127,255,110,.2); color: var(–accent); }
-.status.err { background: rgba(255,80,80,.06); border: 1px solid rgba(255,80,80,.2); color: #ff7070; }
-
-/* ── BUTTONS ── */
-.btn {
-width: 100%; padding: 17px; border: none; border-radius: 14px;
-font-size: 16px; font-weight: 800; font-family: ‘Syne’, sans-serif;
-cursor: pointer; transition: all .18s; letter-spacing: .01em;
-}
-.btn-stretch { background: linear-gradient(135deg, var(–accent2), var(–accent)); color: #000; }
-.btn-stretch:active { transform: scale(.98); opacity: .88; }
-.btn-stretch:disabled { background: var(–border); color: var(–muted); cursor: default; }
-
-/* ── RESULT SECTION ── */
-.result { display: none; flex-direction: column; gap: 14px; }
-
-/* Share button - big and obvious */
-.share-btn {
-display: flex; flex-direction: column; align-items: center; justify-content: center;
-gap: 5px; padding: 24px;
-background: linear-gradient(135deg, var(–accent) 0%, #4eff3a 100%);
-border: none; border-radius: 20px; cursor: pointer;
-font-family: ‘Syne’, sans-serif; color: #000;
-box-shadow: 0 0 50px rgba(127,255,110,.3);
-transition: all .2s; width: 100%;
-}
-.share-btn:active { transform: scale(.97); box-shadow: 0 0 20px rgba(127,255,110,.15); }
-.share-btn-main { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
-.share-btn-sub { font-size: 12px; font-family: ‘Space Mono’, monospace; opacity: .65; }
-
-/* Shortcut instruction */
-.sc-card {
-background: linear-gradient(135deg, rgba(110,143,255,.07), rgba(127,255,110,.04));
-border: 1px solid rgba(110,143,255,.2); border-radius: 18px; padding: 18px;
-}
-.sc-title {
-font-size: 14px; font-weight: 800; margin-bottom: 14px;
-display: flex; align-items: center; gap: 8px;
-}
-.sc-steps { display: flex; flex-direction: column; gap: 7px; }
-.sc-step {
-display: flex; align-items: flex-start; gap: 10px;
-background: rgba(0,0,0,.25); border-radius: 10px; padding: 11px 12px;
-}
-.sc-n {
-min-width: 22px; height: 22px;
-background: rgba(110,143,255,.15); border: 1px solid rgba(110,143,255,.2);
-border-radius: 50%; display: flex; align-items: center; justify-content: center;
-font-size: 10px; font-weight: 700; font-family: ‘Space Mono’, monospace;
-color: var(–accent2); flex-shrink: 0; margin-top: 2px;
-}
-.sc-t { font-size: 12px; font-family: ‘Space Mono’, monospace; line-height: 1.6; color: var(–text); }
-.sc-t b { color: var(–accent); }
-.sc-t em { color: var(–muted); font-style: normal; }
-
-/* Upload progress overlay */
-.upload-overlay {
-display: none; position: fixed; inset: 0; z-index: 100;
-background: rgba(10,10,15,.92); backdrop-filter: blur(8px);
-align-items: center; justify-content: center; flex-direction: column; gap: 20px;
-}
-.upload-overlay.show { display: flex; }
-.upload-box {
-background: var(–card); border: 1px solid var(–border);
-border-radius: 24px; padding: 36px 32px; text-align: center; width: 90%; max-width: 360px;
-}
-.upload-icon { font-size: 44px; margin-bottom: 14px; }
-.upload-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
-.upload-sub { font-size: 12px; color: var(–muted); font-family: ‘Space Mono’, monospace; margin-bottom: 20px; line-height: 1.6; }
-.upload-prog-track { height: 6px; background: var(–surface); border-radius: 100px; overflow: hidden; margin-bottom: 10px; }
-.upload-prog-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(–accent2), var(–accent)); border-radius: 100px; transition: width .3s; }
-.upload-pct { font-size: 13px; font-family: ‘Space Mono’, monospace; color: var(–accent); }
-
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
-.pulsing { animation: pulse 1.4s infinite; }
-canvas { display: none; }
+:root{--bg:#0a0a0f;--surface:#111118;--card:#16161f;--accent:#7fff6e;--accent2:#6e8fff;--text:#e8e8f0;--muted:#555566;--border:#222233;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:48px 18px 80px;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 15% 20%,rgba(110,143,255,.09) 0%,transparent 65%),radial-gradient(ellipse 50% 35% at 85% 80%,rgba(127,255,110,.07) 0%,transparent 65%);pointer-events:none;z-index:0;}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.013) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.013) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;width:100%;max-width:640px;display:flex;flex-direction:column;gap:18px;}
+header{text-align:center;padding:6px 0 10px;}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(127,255,110,.07);border:1px solid rgba(127,255,110,.18);border-radius:100px;padding:5px 14px;font-size:11px;font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:.08em;margin-bottom:16px;}
+.badge::before{content:'';width:7px;height:7px;background:var(--accent);border-radius:50%;display:inline-block;}
+h1{font-size:clamp(34px,8vw,54px);font-weight:800;line-height:1.0;letter-spacing:-.025em;background:linear-gradient(150deg,#fff,rgba(255,255,255,.5));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.subtitle{margin-top:9px;font-size:13px;color:var(--muted);font-family:'Space Mono',monospace;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);}
+.pick-btn{width:100%;background:none;border:2px dashed var(--border);border-radius:14px;padding:38px 20px;cursor:pointer;transition:all .22s;display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text);}
+.pick-btn:active{border-color:var(--accent);background:rgba(127,255,110,.035);transform:scale(.99);}
+.pick-icon{width:58px;height:58px;background:linear-gradient(135deg,rgba(110,143,255,.18),rgba(127,255,110,.15));border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:26px;}
+.pick-label{font-size:17px;font-weight:700;}
+.pick-hint{font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;}
+#fileInput{display:none;}
+.preview-box{display:none;margin-top:14px;border-radius:11px;overflow:hidden;background:#000;}
+.preview-box video{width:100%;max-height:185px;object-fit:contain;display:block;}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px;}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;}
+.chip-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:3px;}
+.chip-val{font-size:14px;font-weight:700;font-family:'Space Mono',monospace;}
+.chip-val.green{color:var(--accent);}
+.prog-card{display:none;}
+.prog-label{font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;text-align:center;margin-bottom:9px;}
+.prog-track{height:5px;background:var(--surface);border-radius:100px;overflow:hidden;}
+.prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:100px;transition:width .25s;}
+.status{display:none;border-radius:11px;padding:12px 15px;font-size:12px;font-family:'Space Mono',monospace;text-align:center;}
+.status.ok{background:rgba(127,255,110,.06);border:1px solid rgba(127,255,110,.2);color:var(--accent);}
+.status.err{background:rgba(255,80,80,.06);border:1px solid rgba(255,80,80,.2);color:#ff7070;}
+.btn{width:100%;padding:17px;border:none;border-radius:14px;font-size:16px;font-weight:800;font-family:'Syne',sans-serif;cursor:pointer;transition:all .18s;letter-spacing:.01em;}
+.btn-stretch{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#000;}
+.btn-stretch:active{transform:scale(.98);opacity:.88;}
+.btn-stretch:disabled{background:var(--border);color:var(--muted);cursor:default;}
+.result{display:none;flex-direction:column;gap:14px;}
+.share-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:24px;background:linear-gradient(135deg,var(--accent) 0%,#4eff3a 100%);border:none;border-radius:20px;cursor:pointer;font-family:'Syne',sans-serif;color:#000;box-shadow:0 0 50px rgba(127,255,110,.3);transition:all .2s;width:100%;}
+.share-btn:active{transform:scale(.97);box-shadow:0 0 20px rgba(127,255,110,.15);}
+.share-btn-main{font-size:20px;font-weight:800;display:flex;align-items:center;gap:10px;}
+.share-btn-sub{font-size:12px;font-family:'Space Mono',monospace;opacity:.65;}
+.sc-card{background:linear-gradient(135deg,rgba(110,143,255,.07),rgba(127,255,110,.04));border:1px solid rgba(110,143,255,.2);border-radius:18px;padding:18px;}
+.sc-title{font-size:14px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.sc-steps{display:flex;flex-direction:column;gap:7px;}
+.sc-step{display:flex;align-items:flex-start;gap:10px;background:rgba(0,0,0,.25);border-radius:10px;padding:11px 12px;}
+.sc-n{min-width:22px;height:22px;background:rgba(110,143,255,.15);border:1px solid rgba(110,143,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'Space Mono',monospace;color:var(--accent2);flex-shrink:0;margin-top:2px;}
+.sc-t{font-size:12px;font-family:'Space Mono',monospace;line-height:1.6;color:var(--text);}
+.sc-t b{color:var(--accent);}
+.sc-t em{color:var(--muted);font-style:normal;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.pulsing{animation:pulse 1.4s infinite;}
+canvas{display:none;}
 </style>
-
 </head>
 <body>
 <div class="grid-bg"></div>
-
-<!-- Upload overlay -->
-
-<div class="upload-overlay" id="uploadOverlay">
-  <div class="upload-box">
-    <div class="upload-icon pulsing">☁️</div>
-    <div class="upload-title">Завантаження…</div>
-    <div class="upload-sub">Відео завантажується на сервер.<br>Після цього отримаєш посилання.</div>
-    <div class="upload-prog-track"><div class="upload-prog-fill" id="uploadFill"></div></div>
-    <div class="upload-pct" id="uploadPct">0%</div>
-  </div>
-</div>
-
 <div class="wrap">
   <header>
-    <div class="badge">iPad · iOS 26 · PWA</div>
-    <h1>Stretch<br><span>2732×2048</span></h1>
+    <div class="badge">iPad - iOS 26 - PWA</div>
+    <h1>Stretch<br><span>2732x2048</span></h1>
     <p class="subtitle">// video resolution stretcher</p>
   </header>
 
-  <!-- Step 1: Pick -->
-
   <div class="card">
     <button class="pick-btn" onclick="document.getElementById('fileInput').click()">
-      <div class="pick-icon">🎬</div>
+      <div class="pick-icon">&#127916;</div>
       <div class="pick-label">Обрати відео</div>
-      <div class="pick-hint">натисни → відкриється бібліотека Фото</div>
+      <div class="pick-hint">натисни - відкриється бібліотека Фото</div>
     </button>
     <input type="file" id="fileInput" accept="video/*" onchange="handleFile(this)">
-
-```
-<div class="preview-box" id="previewBox">
-  <video id="srcVideo" playsinline muted controls></video>
-</div>
-
-<div class="chips" id="chips" style="display:none">
-  <div class="chip"><div class="chip-label">Оригінал</div><div class="chip-val" id="cSrc">—</div></div>
-  <div class="chip"><div class="chip-label">Результат</div><div class="chip-val green">2732×2048</div></div>
-  <div class="chip"><div class="chip-label">Тривалість</div><div class="chip-val" id="cDur">—</div></div>
-  <div class="chip"><div class="chip-label">Розмір</div><div class="chip-val" id="cSize">—</div></div>
-</div>
-```
-
+    <div class="preview-box" id="previewBox">
+      <video id="srcVideo" playsinline muted controls></video>
+    </div>
+    <div class="chips" id="chips" style="display:none">
+      <div class="chip"><div class="chip-label">Оригінал</div><div class="chip-val" id="cSrc">-</div></div>
+      <div class="chip"><div class="chip-label">Результат</div><div class="chip-val green">2732x2048</div></div>
+      <div class="chip"><div class="chip-label">Тривалість</div><div class="chip-val" id="cDur">-</div></div>
+      <div class="chip"><div class="chip-label">Розмір</div><div class="chip-val" id="cSize">-</div></div>
+    </div>
   </div>
 
-  <!-- Step 2: Process -->
-
   <div class="card prog-card" id="progCard">
-    <div class="prog-label pulsing" id="progLabel">Ініціалізація…</div>
+    <div class="prog-label pulsing" id="progLabel">Ініціалізація...</div>
     <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
   </div>
 
   <div class="status" id="status"></div>
 
   <button class="btn btn-stretch" id="stretchBtn" onclick="startStretch()" disabled>
-    🚀 Розтягнути до 2732×2048
+    Розтягнути до 2732x2048
   </button>
 
-  <!-- Step 3: Result -->
-
   <div class="result" id="result">
+    <button class="share-btn" id="shareBtn" onclick="shareVideo()">
+      <div class="share-btn-main">Поділитись відео</div>
+      <div class="share-btn-sub">iOS Share Sheet - Shortcut збереже в Фото</div>
+    </button>
 
 ```
-<button class="share-btn" id="shareBtn" onclick="shareVideo()">
-  <div class="share-btn-main">
-    <span>⬆️</span> Поділитись відео
-  </div>
-  <div class="share-btn-sub">відкриє iOS Share Sheet → Shortcut збереже в Фото</div>
-</button>
-
-<!-- Shortcut setup guide -->
 <div class="sc-card">
-  <div class="sc-title">⚡️ Налаштування Shortcut <em style="font-size:11px;color:var(--muted);font-weight:400">(один раз)</em></div>
+  <div class="sc-title">Shortcut - налаштування (один раз)</div>
   <div class="sc-steps">
-    <div class="sc-step">
-      <div class="sc-n">1</div>
-      <div class="sc-t">Відкрий <b>Скорочення</b> → натисни <b>+</b> → <b>Нове скорочення</b></div>
-    </div>
-    <div class="sc-step">
-      <div class="sc-n">2</div>
-      <div class="sc-t">Натисни <b>Додати дію</b> → знайди <b>«URL»</b> → вибери <b>«Отримати вміст URL»</b><br>
-      <em>Method: GET · залиш як є</em></div>
-    </div>
-    <div class="sc-step">
-      <div class="sc-n">3</div>
-      <div class="sc-t">Додай дію <b>«Зберегти в Фотоальбом»</b></div>
-    </div>
-    <div class="sc-step">
-      <div class="sc-n">4</div>
-      <div class="sc-t">Вгорі натисни на назву → <b>«Отримувати дані з: Share Sheet»</b><br>
-      <em>Тип: URL</em></div>
-    </div>
-    <div class="sc-step">
-      <div class="sc-n">5</div>
-      <div class="sc-t">Збережи. Назви <b>«Відео в Фото»</b></div>
-    </div>
-    <div class="sc-step">
-      <div class="sc-n">★</div>
-      <div class="sc-t"><b>Тепер:</b> натисни «Поділитись відео» → обери <b>«Відео в Фото»</b> → готово ✅</div>
-    </div>
+    <div class="sc-step"><div class="sc-n">1</div><div class="sc-t">Скорочення - натисни <b>+</b> - Нове скорочення</div></div>
+    <div class="sc-step"><div class="sc-n">2</div><div class="sc-t">Вгорі натисни на назву - увімкни <b>"Отримувати дані з: Share Sheet"</b> - тип: <b>URL</b></div></div>
+    <div class="sc-step"><div class="sc-n">3</div><div class="sc-t">Додай дію <b>"Отримати вміст URL"</b> - у полі URL постав <b>Shortcut Input</b> (змінна)</div></div>
+    <div class="sc-step"><div class="sc-n">4</div><div class="sc-t">Додай дію <b>"Зберегти в Фотоальбом"</b></div></div>
+    <div class="sc-step"><div class="sc-n">5</div><div class="sc-t">Збережи як <b>"Відео в Фото"</b></div></div>
+    <div class="sc-step"><div class="sc-n">★</div><div class="sc-t">Далі: натисни <b>"Поділитись відео"</b> вище - обери <b>"Відео в Фото"</b> - готово</div></div>
   </div>
 </div>
 ```
 
   </div>
-
 </div>
 <canvas id="canvas"></canvas>
+<script type="module">
+import { upload } from 'https://cdn.jsdelivr.net/npm/@vercel/blob@0.27.1/+esm';
 
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(() => {});
+if (‘serviceWorker’ in navigator) {
+navigator.serviceWorker.register(’/sw.js’).catch(() => {});
 }
 
 let srcFile = null;
-let videoUrl = null; // final https:// URL from server
+let videoUrl = null;
 
 const $ = id => document.getElementById(id);
-const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
-const fmtB = b => b < 1048576 ? (b/1024).toFixed(1)+' KB' : (b/1048576).toFixed(1)+' MB';
+const fmt = s => Math.floor(s/60) + ‘:’ + String(Math.floor(s%60)).padStart(2,‘0’);
+const fmtB = b => b < 1048576 ? (b/1024).toFixed(1)+’ KB’ : (b/1048576).toFixed(1)+’ MB’;
 
 function showStatus(msg, type) {
-  const el = $('status');
-  el.textContent = msg;
-  el.className = 'status ' + type;
-  el.style.display = msg ? 'block' : 'none';
+const el = $(‘status’);
+el.textContent = msg;
+el.className = ’status ’ + type;
+el.style.display = msg ? ‘block’ : ‘none’;
 }
 
-// ── STEP 1: Pick file ──────────────────────────────────────────
-function handleFile(input) {
-  const file = input.files[0];
-  if (!file) return;
-  srcFile = file;
-  videoUrl = null;
+window.handleFile = function(input) {
+const file = input.files[0];
+if (!file) return;
+srcFile = file;
+videoUrl = null;
+$(‘result’).style.display = ‘none’;
+$(‘progCard’).style.display = ‘none’;
+showStatus(’’, ‘’);
+const url = URL.createObjectURL(file);
+const v = $(‘srcVideo’);
+v.src = url;
+$(‘previewBox’).style.display = ‘block’;
+v.onloadedmetadata = () => {
+$(‘chips’).style.display = ‘grid’;
+$(‘cSrc’).textContent = v.videoWidth + ‘x’ + v.videoHeight;
+$(‘cDur’).textContent = fmt(v.duration);
+$(‘cSize’).textContent = fmtB(file.size);
+$(‘stretchBtn’).disabled = false;
+};
+};
 
-  $('result').style.display = 'none';
-  $('progCard').style.display = 'none';
-  showStatus('', '');
+window.startStretch = async function() {
+if (!srcFile) return;
+const btn = $(‘stretchBtn’);
+btn.disabled = true;
+btn.textContent = ‘Обробка…’;
+$(‘result’).style.display = ‘none’;
+showStatus(’’, ‘’);
+$(‘progCard’).style.display = ‘block’;
+const fill = $(‘progFill’);
+const label = $(‘progLabel’);
 
-  const url = URL.createObjectURL(file);
-  const v = $('srcVideo');
-  v.src = url;
-  $('previewBox').style.display = 'block';
+try {
+if (!window.MediaRecorder) throw new Error(‘Потрібен Safari 14.5+’);
 
-  v.onloadedmetadata = () => {
-    $('chips').style.display = 'grid';
-    $('cSrc').textContent = `${v.videoWidth}×${v.videoHeight}`;
-    $('cDur').textContent = fmt(v.duration);
-    $('cSize').textContent = fmtB(file.size);
-    $('stretchBtn').disabled = false;
+```
+const srcVid = $('srcVideo');
+const canvas = $('canvas');
+canvas.width = 2732; canvas.height = 2048;
+const ctx = canvas.getContext('2d');
+
+const mimes = [
+  'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+  'video/mp4;codecs=avc1',
+  'video/mp4',
+  'video/webm;codecs=vp9',
+  'video/webm;codecs=vp8',
+  'video/webm',
+];
+const mime = mimes.find(m => MediaRecorder.isTypeSupported(m));
+if (!mime) throw new Error('Кодек не підтримується');
+
+const stream = canvas.captureStream(30);
+try {
+  const ac = new (AudioContext || webkitAudioContext)();
+  const src = ac.createMediaElementSource(srcVid);
+  const dst = ac.createMediaStreamDestination();
+  src.connect(dst); src.connect(ac.destination);
+  dst.stream.getAudioTracks().forEach(t => stream.addTrack(t));
+} catch(e) {}
+
+const chunks = [];
+const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 25000000 });
+rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+const dur = srcVid.duration;
+
+await new Promise((res, rej) => {
+  rec.onstop = res;
+  rec.onerror = e => rej(e.error || new Error('Помилка запису'));
+  rec.start(200);
+  srcVid.currentTime = 0;
+  srcVid.play();
+  const draw = () => {
+    if (srcVid.paused || srcVid.ended) return;
+    ctx.drawImage(srcVid, 0, 0, 2732, 2048);
+    requestAnimationFrame(draw);
   };
+  requestAnimationFrame(draw);
+  const timer = setInterval(() => {
+    const p = Math.min((srcVid.currentTime / dur) * 100, 99);
+    fill.style.width = p + '%';
+    label.textContent = 'Обробка: ' + p.toFixed(0) + '% - ' + fmt(srcVid.currentTime) + ' / ' + fmt(dur);
+  }, 250);
+  srcVid.onended = () => {
+    clearInterval(timer);
+    fill.style.width = '100%';
+    label.textContent = 'Завершення...';
+    setTimeout(() => rec.stop(), 700);
+  };
+  srcVid.onerror = () => { clearInterval(timer); rej(new Error('Помилка читання відео')); };
+});
+
+const ext = mime.includes('mp4') ? 'mp4' : 'webm';
+const blob = new Blob(chunks, { type: mime });
+
+// Upload directly to Vercel Blob
+label.textContent = 'Завантаження...';
+fill.style.width = '0%';
+
+const result = await upload('stretched_2732x2048.' + ext, blob, {
+  access: 'public',
+  handleUploadUrl: '/api/upload',
+  onUploadProgress: (e) => {
+    const p = Math.round(e.percentage);
+    fill.style.width = p + '%';
+    label.textContent = 'Завантаження: ' + p + '%';
+  },
+});
+
+videoUrl = result.url;
+
+$('progCard').style.display = 'none';
+$('result').style.display = 'flex';
+$('result').scrollIntoView({ behavior: 'smooth' });
+showStatus('Готово! Натисни "Поділитись відео"', 'ok');
+```
+
+} catch(err) {
+$(‘progCard’).style.display = ‘none’;
+showStatus(’Помилка: ’ + err.message, ‘err’);
+console.error(err);
 }
 
-// ── STEP 2: Stretch ────────────────────────────────────────────
-async function startStretch() {
-  if (!srcFile) return;
+btn.disabled = false;
+btn.textContent = ‘Розтягнути до 2732x2048’;
+};
 
-  const btn = $('stretchBtn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Обробка…';
-  $('result').style.display = 'none';
-  showStatus('', '');
-
-  $('progCard').style.display = 'block';
-  const fill = $('progFill');
-  const label = $('progLabel');
-
-  try {
-    if (!window.MediaRecorder) throw new Error('Потрібен Safari 14.5+');
-
-    const srcVid = $('srcVideo');
-    const canvas = $('canvas');
-    canvas.width = 2732; canvas.height = 2048;
-    const ctx = canvas.getContext('2d');
-
-    // Find best codec
-    const mimes = [
-      'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
-      'video/mp4;codecs=avc1',
-      'video/mp4',
-      'video/webm;codecs=vp9',
-      'video/webm;codecs=vp8',
-      'video/webm',
-    ];
-    let mime = mimes.find(m => MediaRecorder.isTypeSupported(m));
-    if (!mime) throw new Error('Кодек не підтримується');
-
-    const stream = canvas.captureStream(30);
-
-    // Try audio
-    try {
-      const ac = new (AudioContext || webkitAudioContext)();
-      const src = ac.createMediaElementSource(srcVid);
-      const dst = ac.createMediaStreamDestination();
-      src.connect(dst); src.connect(ac.destination);
-      dst.stream.getAudioTracks().forEach(t => stream.addTrack(t));
-    } catch(e) {}
-
-    const chunks = [];
-    const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 25_000_000 });
-    rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-
-    const dur = srcVid.duration;
-
-    // Record
-    await new Promise((res, rej) => {
-      rec.onstop = res;
-      rec.onerror = e => rej(e.error || new Error('Помилка запису'));
-      rec.start(200);
-      srcVid.currentTime = 0;
-      srcVid.play();
-
-      const draw = () => {
-        if (srcVid.paused || srcVid.ended) return;
-        ctx.drawImage(srcVid, 0, 0, 2732, 2048);
-        requestAnimationFrame(draw);
-      };
-      requestAnimationFrame(draw);
-
-      const timer = setInterval(() => {
-        const p = Math.min((srcVid.currentTime / dur) * 100, 99);
-        fill.style.width = p + '%';
-        label.textContent = `Обробка: ${p.toFixed(0)}% · ${fmt(srcVid.currentTime)} / ${fmt(dur)}`;
-      }, 250);
-
-      srcVid.onended = () => {
-        clearInterval(timer);
-        fill.style.width = '100%';
-        label.textContent = 'Завершення…';
-        setTimeout(() => rec.stop(), 700);
-      };
-      srcVid.onerror = () => { clearInterval(timer); rej(new Error('Помилка читання відео')); };
-    });
-
-    const ext = mime.includes('mp4') ? 'mp4' : 'webm';
-    const blob = new Blob(chunks, { type: mime });
-
-    // ── STEP 3: Upload to server ─────────────────────────────
-    label.textContent = 'Завантаження на сервер…';
-    fill.style.width = '0%';
-
-    videoUrl = await uploadVideo(blob, ext);
-
-    $('progCard').style.display = 'none';
-    $('result').style.display = 'flex';
-    $('result').scrollIntoView({ behavior: 'smooth' });
-    showStatus('✅ Готово! Натисни «Поділитись відео»', 'ok');
-
-  } catch(err) {
-    $('progCard').style.display = 'none';
-    showStatus('❌ ' + err.message, 'err');
-    console.error(err);
-  }
-
-  btn.disabled = false;
-  btn.textContent = '🚀 Розтягнути до 2732×2048';
+window.shareVideo = async function() {
+if (!videoUrl) { showStatus(‘Спочатку оброби відео’, ‘err’); return; }
+if (navigator.share) {
+try {
+await navigator.share({ title: ‘Stretched 2732x2048’, url: videoUrl });
+} catch(e) {
+if (e.name !== ‘AbortError’) showStatus(’Помилка: ’ + e.message, ‘err’);
 }
-
-// ── Upload with progress ───────────────────────────────────────
-function uploadVideo(blob, ext) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/upload');
-    xhr.setRequestHeader('Content-Type', 'video/' + ext);
-
-    xhr.upload.onprogress = e => {
-      if (e.lengthComputable) {
-        const p = (e.loaded / e.total * 100).toFixed(0);
-        $('uploadFill').style.width = p + '%';
-        $('uploadPct').textContent = p + '%';
-        $('progFill').style.width = p + '%';
-        $('progLabel').textContent = `Завантаження: ${p}%`;
-      }
-    };
-
-    xhr.onload = () => {
-      $('uploadOverlay').classList.remove('show');
-      if (xhr.status === 200) {
-        try {
-          const data = JSON.parse(xhr.responseText);
-          resolve(data.url);
-        } catch(e) { reject(new Error('Невірна відповідь сервера')); }
-      } else {
-        reject(new Error(`Помилка сервера: ${xhr.status}`));
-      }
-    };
-
-    xhr.onerror = () => {
-      $('uploadOverlay').classList.remove('show');
-      reject(new Error('Немає з\'єднання з сервером'));
-    };
-
-    $('uploadFill').style.width = '0%';
-    $('uploadPct').textContent = '0%';
-    $('uploadOverlay').classList.add('show');
-    xhr.send(blob);
-  });
+} else {
+try {
+await navigator.clipboard.writeText(videoUrl);
+showStatus(‘Посилання скопійовано!’, ‘ok’);
+} catch(e) {
+showStatus(videoUrl, ‘ok’);
 }
-
-// ── STEP 4: Share ──────────────────────────────────────────────
-async function shareVideo() {
-  if (!videoUrl) { showStatus('❌ Спочатку оброби відео', 'err'); return; }
-
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: 'Stretched 2732×2048',
-        text: 'Відео 2732×2048',
-        url: videoUrl,
-      });
-    } catch(e) {
-      if (e.name !== 'AbortError') showStatus('❌ ' + e.message, 'err');
-    }
-  } else {
-    // Fallback: copy link
-    try {
-      await navigator.clipboard.writeText(videoUrl);
-      showStatus('📋 Посилання скопійовано в буфер!', 'ok');
-    } catch(e) {
-      showStatus('🔗 ' + videoUrl, 'ok');
-    }
-  }
 }
+};
 </script>
 
 </body>
