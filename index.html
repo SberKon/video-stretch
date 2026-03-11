@@ -4,131 +4,158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-
-<!-- PWA / iOS home screen -->
-
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="VideoStretch">
 <meta name="theme-color" content="#0a0a0f">
-
-<!-- iOS icons -->
-
 <link rel="apple-touch-icon" sizes="180x180" href="/icon-180x180.png">
 <link rel="apple-touch-icon" sizes="167x167" href="/icon-167x167.png">
 <link rel="apple-touch-icon" sizes="152x152" href="/icon-152x152.png">
-
-<!-- PWA manifest -->
-
 <link rel="manifest" href="/manifest.json">
-
-<!-- Splash screen color for iOS -->
-
-<meta name="msapplication-TileColor" content="#0a0a0f">
-
 <title>Video Stretch 2732×2048</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
-  :root {
-    --bg:#0a0a0f; --surface:#111118; --card:#16161f;
-    --accent:#7fff6e; --accent2:#6e8fff;
-    --text:#e8e8f0; --muted:#555566; --border:#222233;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:50px 20px 100px;overflow-x:hidden;}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 10% 20%,rgba(110,143,255,.08) 0%,transparent 70%),radial-gradient(ellipse 50% 35% at 90% 80%,rgba(127,255,110,.07) 0%,transparent 70%);pointer-events:none;z-index:0;}
-  .grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
-  .wrapper{position:relative;z-index:1;width:100%;max-width:700px;display:flex;flex-direction:column;gap:24px;}
-  header{text-align:center;padding:10px 0 4px;}
-  .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(127,255,110,.08);border:1px solid rgba(127,255,110,.2);border-radius:100px;padding:5px 14px;font-size:11px;font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:.08em;margin-bottom:18px;}
-  .badge::before{content:'●';font-size:8px;}
-  h1{font-size:clamp(32px,8vw,52px);font-weight:800;line-height:1.05;letter-spacing:-.02em;background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.6) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  h1 span{background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  .subtitle{margin-top:10px;font-size:14px;color:var(--muted);font-family:'Space Mono',monospace;}
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+:root{
+  --bg:#0a0a0f;--surface:#111118;--card:#16161f;
+  --accent:#7fff6e;--accent2:#6e8fff;
+  --text:#e8e8f0;--muted:#555566;--border:#222233;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;
+  min-height:100dvh;display:flex;flex-direction:column;align-items:center;
+  padding:50px 20px 80px;overflow-x:hidden;
+}
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 10% 20%,rgba(110,143,255,.08) 0%,transparent 70%),
+             radial-gradient(ellipse 50% 35% at 90% 80%,rgba(127,255,110,.07) 0%,transparent 70%);
+  pointer-events:none;z-index:0;}
+.grid-bg{position:fixed;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;}
 
-/* Install banner */
-.install-banner{background:linear-gradient(135deg,rgba(110,143,255,.12),rgba(127,255,110,.08));border:1px solid rgba(127,255,110,.25);border-radius:16px;padding:16px 18px;display:none;align-items:center;gap:14px;}
-.install-banner .ib-icon{font-size:28px;flex-shrink:0;}
-.install-banner .ib-text{flex:1;}
-.install-banner .ib-title{font-size:14px;font-weight:700;color:var(–text);margin-bottom:3px;}
-.install-banner .ib-sub{font-size:11px;color:var(–muted);font-family:‘Space Mono’,monospace;line-height:1.5;}
-.install-banner .ib-steps{margin-top:8px;background:rgba(0,0,0,.3);border-radius:10px;padding:10px 12px;}
-.install-banner .ib-steps p{font-size:12px;font-family:‘Space Mono’,monospace;color:var(–text);line-height:2;}
-.install-banner .ib-steps strong{color:var(–accent);}
+.wrap{position:relative;z-index:1;width:100%;max-width:680px;display:flex;flex-direction:column;gap:20px;}
 
-.card{background:var(–card);border:1px solid var(–border);border-radius:20px;padding:24px;position:relative;overflow:hidden;}
-.card::before{content:’’;position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);}
-.drop-zone{border:2px dashed var(–border);border-radius:14px;padding:44px 20px;text-align:center;cursor:pointer;transition:all .3s;}
+header{text-align:center;padding:8px 0;}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(127,255,110,.08);
+border:1px solid rgba(127,255,110,.2);border-radius:100px;padding:5px 14px;
+font-size:11px;font-family:‘Space Mono’,monospace;color:var(–accent);letter-spacing:.08em;margin-bottom:16px;}
+.badge::before{content:‘●’;font-size:8px;}
+h1{font-size:clamp(30px,7vw,50px);font-weight:800;line-height:1.05;letter-spacing:-.02em;
+background:linear-gradient(135deg,#fff,rgba(255,255,255,.55));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+h1 span{background:linear-gradient(135deg,var(–accent),var(–accent2));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.subtitle{margin-top:8px;font-size:13px;color:var(–muted);font-family:‘Space Mono’,monospace;}
+
+.card{background:var(–card);border:1px solid var(–border);border-radius:20px;
+padding:22px;position:relative;overflow:hidden;}
+.card::before{content:’’;position:absolute;top:0;left:0;right:0;height:1px;
+background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);}
+
+.drop-zone{border:2px dashed var(–border);border-radius:14px;padding:40px 20px;
+text-align:center;cursor:pointer;transition:all .25s;}
 .drop-zone:active{border-color:var(–accent);background:rgba(127,255,110,.04);transform:scale(.99);}
-.drop-icon{width:64px;height:64px;margin:0 auto 16px;background:linear-gradient(135deg,rgba(110,143,255,.15),rgba(127,255,110,.15));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;}
-.drop-zone h3{font-size:18px;font-weight:700;margin-bottom:6px;}
-.drop-zone p{font-size:13px;color:var(–muted);font-family:‘Space Mono’,monospace;}
+.drop-icon{width:60px;height:60px;margin:0 auto 14px;
+background:linear-gradient(135deg,rgba(110,143,255,.15),rgba(127,255,110,.15));
+border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;}
+.drop-zone h3{font-size:17px;font-weight:700;margin-bottom:5px;}
+.drop-zone p{font-size:12px;color:var(–muted);font-family:‘Space Mono’,monospace;}
 #fileInput{display:none;}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
-.info-item{background:var(–surface);border:1px solid var(–border);border-radius:12px;padding:14px 16px;}
-.info-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(–muted);font-family:‘Space Mono’,monospace;margin-bottom:4px;}
-.info-value{font-size:15px;font-weight:700;font-family:‘Space Mono’,monospace;}
+
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.info-item{background:var(–surface);border:1px solid var(–border);border-radius:11px;padding:12px 14px;}
+.info-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(–muted);font-family:‘Space Mono’,monospace;margin-bottom:3px;}
+.info-value{font-size:14px;font-weight:700;font-family:‘Space Mono’,monospace;}
 .info-value.hl{color:var(–accent);}
-.preview-wrap{border-radius:12px;overflow:hidden;background:#000;display:none;margin-top:16px;}
-video{width:100%;height:auto;max-height:200px;object-fit:contain;display:block;}
-.progress-wrap{display:none;flex-direction:column;gap:10px;}
-.progress-bar-bg{height:6px;background:var(–surface);border-radius:100px;overflow:hidden;}
-.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(–accent2),var(–accent));border-radius:100px;transition:width .2s;}
-.progress-text{font-size:12px;color:var(–muted);font-family:‘Space Mono’,monospace;text-align:center;}
-.btn{width:100%;padding:18px;border:none;border-radius:14px;font-size:16px;font-weight:700;font-family:‘Syne’,sans-serif;cursor:pointer;transition:all .2s;letter-spacing:.02em;}
+
+.preview-wrap{border-radius:11px;overflow:hidden;background:#000;display:none;margin-top:14px;}
+video{width:100%;height:auto;max-height:190px;object-fit:contain;display:block;}
+
+.prog-wrap{display:flex;flex-direction:column;gap:10px;}
+.prog-bar-bg{height:5px;background:var(–surface);border-radius:100px;overflow:hidden;}
+.prog-bar{height:100%;width:0%;background:linear-gradient(90deg,var(–accent2),var(–accent));border-radius:100px;transition:width .2s;}
+.prog-text{font-size:11px;color:var(–muted);font-family:‘Space Mono’,monospace;text-align:center;}
+
+.btn{width:100%;padding:17px;border:none;border-radius:14px;font-size:16px;font-weight:700;
+font-family:‘Syne’,sans-serif;cursor:pointer;transition:all .2s;letter-spacing:.02em;}
 .btn-primary{background:linear-gradient(135deg,var(–accent2),var(–accent));color:#000;}
 .btn-primary:active{transform:scale(.98);opacity:.9;}
-.btn-primary:disabled{background:var(–border);color:var(–muted);}
-.status-box{border-radius:12px;padding:14px 18px;font-size:13px;font-family:‘Space Mono’,monospace;text-align:center;display:none;}
+.btn-primary:disabled{background:var(–border);color:var(–muted);cursor:default;}
+
+.status-box{border-radius:12px;padding:13px 16px;font-size:12px;font-family:‘Space Mono’,monospace;text-align:center;display:none;}
 .status-ok{background:rgba(127,255,110,.06);border:1px solid rgba(127,255,110,.2);color:var(–accent);}
 .status-err{background:rgba(255,80,80,.06);border:1px solid rgba(255,80,80,.2);color:#ff8080;}
-.save-section{display:none;background:var(–card);border:2px solid rgba(127,255,110,.3);border-radius:20px;padding:24px;text-align:center;}
-.save-section h3{font-size:18px;font-weight:800;margin-bottom:8px;color:var(–accent);}
-.save-steps{background:var(–surface);border-radius:12px;padding:16px;margin-bottom:16px;text-align:left;}
-.save-steps p{font-size:13px;font-family:‘Space Mono’,monospace;color:var(–text);line-height:2;padding:2px 0;}
-.save-steps p strong{color:var(–accent);}
-.result-video-wrap{border-radius:14px;overflow:hidden;background:#000;position:relative;border:2px solid rgba(127,255,110,.2);}
-.result-video-wrap video{width:100%;max-height:260px;object-fit:contain;display:block;}
-.hold-badge{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:var(–accent);font-size:12px;font-family:‘Space Mono’,monospace;padding:6px 14px;border-radius:8px;white-space:nowrap;pointer-events:none;border:1px solid rgba(127,255,110,.3);animation:blink 1.8s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── RESULT ── */
+.result-section{display:none;flex-direction:column;gap:16px;}
+
+.dl-btn{
+display:flex;align-items:center;justify-content:center;gap:10px;
+background:linear-gradient(135deg,var(–accent) 0%,#5dff4a 100%);
+color:#000;border:none;border-radius:18px;padding:22px 24px;
+font-size:18px;font-weight:800;font-family:‘Syne’,sans-serif;
+cursor:pointer;transition:all .2s;text-decoration:none;text-align:center;
+box-shadow:0 0 40px rgba(127,255,110,.2);
+}
+.dl-btn:active{transform:scale(.97);}
+.dl-sub{font-size:11px;font-weight:400;font-family:‘Space Mono’,monospace;opacity:.65;display:block;margin-top:3px;}
+
+.result-info{font-size:11px;color:var(–muted);font-family:‘Space Mono’,monospace;text-align:center;}
+
+/* Shortcut card */
+.sc-card{background:linear-gradient(135deg,rgba(110,143,255,.07),rgba(127,255,110,.04));
+border:1px solid rgba(110,143,255,.2);border-radius:18px;padding:20px;}
+.sc-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.sc-ico{width:46px;height:46px;background:linear-gradient(135deg,rgba(110,143,255,.2),rgba(127,255,110,.15));
+border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.sc-title{font-size:15px;font-weight:800;}
+.sc-sub{font-size:11px;color:var(–muted);font-family:‘Space Mono’,monospace;margin-top:2px;}
+.sc-steps{display:flex;flex-direction:column;gap:8px;}
+.sc-step{display:flex;align-items:flex-start;gap:10px;background:rgba(0,0,0,.25);border-radius:10px;padding:11px 12px;}
+.sc-n{min-width:22px;height:22px;background:rgba(110,143,255,.15);border:1px solid rgba(110,143,255,.25);
+border-radius:50%;display:flex;align-items:center;justify-content:center;
+font-size:10px;font-weight:700;font-family:‘Space Mono’,monospace;color:var(–accent2);margin-top:1px;}
+.sc-t{font-size:12px;font-family:‘Space Mono’,monospace;color:var(–text);line-height:1.6;}
+.sc-t b{color:var(–accent);}
+.sc-t em{color:var(–muted);font-style:normal;}
+
+.divider{display:flex;align-items:center;gap:10px;color:var(–muted);font-size:11px;font-family:‘Space Mono’,monospace;}
+.divider::before,.divider::after{content:’’;flex:1;height:1px;background:var(–border);}
+
+/* Setup card */
+.setup-card{background:var(–card);border:1px solid var(–border);border-radius:18px;padding:20px;}
+.setup-head{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(–text);}
+.setup-list{display:flex;flex-direction:column;gap:6px;}
+.setup-item{font-size:12px;font-family:‘Space Mono’,monospace;color:var(–muted);
+line-height:1.65;padding:9px 13px;background:var(–surface);border-radius:9px;border-left:2px solid var(–border);}
+.setup-item b{color:var(–text);}
+.setup-item .g{color:var(–accent);}
+
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .processing{animation:pulse 1.5s infinite;}
 canvas{display:none;}
-.note{font-size:11px;color:var(–muted);font-family:‘Space Mono’,monospace;text-align:center;line-height:1.7;}
-#resultInfo{font-size:12px;color:var(–muted);font-family:‘Space Mono’,monospace;margin-top:12px;}
 </style>
 
 </head>
 <body>
 <div class="grid-bg"></div>
-<div class="wrapper">
+<div class="wrap">
 
   <header>
-    <div class="badge">iPad · PWA · Video Tool</div>
+    <div class="badge">iPad · iOS 26 · Video Tool</div>
     <h1>Stretch<br><span>2732×2048</span></h1>
     <p class="subtitle">// video resolution stretcher</p>
   </header>
 
-  <!-- PWA Install Banner (shown only in Safari, not in standalone) -->
-
-  <div class="install-banner" id="installBanner">
-    <div class="ib-icon">📲</div>
-    <div class="ib-text">
-      <div class="ib-title">Додай на головний екран</div>
-      <div class="ib-sub">Щоб працювати як повноцінний додаток без Safari</div>
-      <div class="ib-steps">
-        <p>1️⃣  Натисни <strong>Поділитись</strong> (іконка □↑)</p>
-        <p>2️⃣  Обери <strong>«На головний екран»</strong></p>
-        <p>3️⃣  Натисни <strong>«Додати»</strong></p>
-      </div>
-    </div>
-  </div>
+  <!-- Pick video -->
 
   <div class="card">
     <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
       <div class="drop-icon">🎬</div>
-      <h3>Обрати відео</h3>
-      <p>Натисни щоб відкрити Фото</p>
+      <h3>Обрати відео з Фото</h3>
+      <p>Натисни щоб відкрити бібліотеку</p>
     </div>
     <input type="file" id="fileInput" accept="video/*" onchange="handleFile(this)">
     <div id="previewWrap" class="preview-wrap">
@@ -138,14 +165,16 @@ canvas{display:none;}
       <div class="info-item"><div class="info-label">Оригінал</div><div class="info-value" id="srcSize">—</div></div>
       <div class="info-item"><div class="info-label">Результат</div><div class="info-value hl">2732×2048</div></div>
       <div class="info-item"><div class="info-label">Тривалість</div><div class="info-value" id="srcDur">—</div></div>
-      <div class="info-item"><div class="info-label">Розмір</div><div class="info-value" id="srcFSize">—</div></div>
+      <div class="info-item"><div class="info-label">Файл</div><div class="info-value" id="srcFSize">—</div></div>
     </div>
   </div>
 
+  <!-- Progress -->
+
   <div class="card" id="progressCard" style="display:none">
-    <div class="progress-wrap" id="progressWrap" style="display:flex">
-      <div class="progress-text processing" id="progressText">Ініціалізація…</div>
-      <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="prog-wrap">
+      <div class="prog-text processing" id="progressText">Ініціалізація…</div>
+      <div class="prog-bar-bg"><div class="prog-bar" id="progressBar"></div></div>
     </div>
   </div>
 
@@ -155,155 +184,199 @@ canvas{display:none;}
     🚀 Розтягнути до 2732×2048
   </button>
 
-  <!-- RESULT -->
+  <!-- Result -->
 
-  <div class="save-section" id="saveSection">
-    <h3>✅ Відео готове!</h3>
-    <div class="save-steps">
-      <p>1️⃣  Натисни на відео нижче</p>
-      <p>2️⃣  <strong>Утримуй палець</strong> 1-2 секунди</p>
-      <p>3️⃣  У меню обери <strong>«Зберегти відео»</strong></p>
-      <p>📲  Відео збережеться в Фото</p>
+  <div class="result-section" id="resultSection">
+
+```
+<a id="dlBtn" class="dl-btn" download="stretched_2732x2048.mp4">
+  ⬇️ Скачати відео
+  <span class="dl-sub">збережеться в папку Файли → Downloads</span>
+</a>
+
+<div class="result-info" id="resultInfo"></div>
+
+<div class="divider">після скачування → зберегти в Фото</div>
+
+<!-- Method A/B -->
+<div class="sc-card">
+  <div class="sc-head">
+    <div class="sc-ico">📂</div>
+    <div>
+      <div class="sc-title">Спосіб A — через Файли</div>
+      <div class="sc-sub">без додаткових налаштувань</div>
     </div>
-    <div class="result-video-wrap">
-      <video id="resultVideo" playsinline controls webkit-playsinline x-webkit-airplay="allow"></video>
-      <div class="hold-badge">👆 Утримуй → Зберегти відео</div>
-    </div>
-    <div id="resultInfo"></div>
   </div>
-
-  <p class="note">Обробка відбувається на пристрої · нікуди не завантажується</p>
+  <div class="sc-steps">
+    <div class="sc-step"><div class="sc-n">1</div><div class="sc-t">Натисни <b>«Скачати відео»</b> вище</div></div>
+    <div class="sc-step"><div class="sc-n">2</div><div class="sc-t">Відкрий додаток <b>Файли</b> → папка <b>Downloads</b></div></div>
+    <div class="sc-step"><div class="sc-n">3</div><div class="sc-t">Натисни на відео <b>і утримуй</b> → <b>Поділитись</b></div></div>
+    <div class="sc-step"><div class="sc-n">4</div><div class="sc-t">Обери <b>«Зберегти відео»</b> → готово в Фото ✅</div></div>
+  </div>
 </div>
 
+<div class="sc-card" style="margin-top:-4px">
+  <div class="sc-head">
+    <div class="sc-ico">⚡️</div>
+    <div>
+      <div class="sc-title">Спосіб B — Shortcut одним натиском</div>
+      <div class="sc-sub">встановити один раз, потім 1 натиск</div>
+    </div>
+  </div>
+  <div class="sc-steps">
+    <div class="sc-step"><div class="sc-n">1</div><div class="sc-t">Скачай відео кнопкою вище</div></div>
+    <div class="sc-step"><div class="sc-n">2</div><div class="sc-t">Запусти Shortcut <b>«Відео в Фото»</b> <em>(інструкція нижче)</em></div></div>
+    <div class="sc-step"><div class="sc-n">3</div><div class="sc-t">Відео автоматично збережеться в Фото ✅</div></div>
+  </div>
+</div>
+
+<!-- Shortcut setup -->
+<div class="setup-card">
+  <div class="setup-head">⚙️ Як створити Shortcut (один раз)</div>
+  <div class="setup-list">
+    <div class="setup-item">1. Відкрий <b>Скорочення</b> → натисни <b>+</b></div>
+    <div class="setup-item">2. Назви: <span class="g">«Відео в Фото»</span></div>
+    <div class="setup-item">3. Додай дію → знайди <b>«Отримати файли з папки»</b><br>
+      Папка: <span class="g">Downloads</span> · Ліміт: <span class="g">1</span> · Сорт: <span class="g">Дата змінення ↓</span></div>
+    <div class="setup-item">4. Додай дію → <b>«Зберегти в Фотоальбом»</b></div>
+    <div class="setup-item">5. Збережи. Додай на головний екран через <b>Поділитись → На головний екран</b></div>
+  </div>
+</div>
+```
+
+  </div>
+
+</div>
 <canvas id="canvas"></canvas>
-
 <script>
-// ── Register Service Worker ──────────────────────────────────
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
-  });
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
 }
 
-// ── Show install banner only in Safari (not standalone PWA) ──
-const isStandalone = window.navigator.standalone === true;
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-if (!isStandalone && isSafari) {
-  document.getElementById('installBanner').style.display = 'flex';
+let srcFile = null;
+const TW = 2732, TH = 2048;
+const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+const fmtB = b => b < 1048576 ? (b/1024).toFixed(1)+’ KB’ : (b/1048576).toFixed(1)+’ MB’;
+
+function showStatus(msg, type) {
+const b = document.getElementById(‘statusBox’);
+b.textContent = msg; b.className = ‘status-box status-’+type;
+b.style.display = msg ? ‘block’ : ‘none’;
 }
 
-// ── Video logic ───────────────────────────────────────────────
-let srcFile=null, outputBlob=null;
-const TW=2732, TH=2048;
+function handleFile(input) {
+const file = input.files[0]; if (!file) return;
+srcFile = file;
+document.getElementById(‘resultSection’).style.display = ‘none’;
+document.getElementById(‘progressCard’).style.display = ‘none’;
+showStatus(’’,‘ok’);
+const url = URL.createObjectURL(file);
+const v = document.getElementById(‘srcVideo’);
+v.src = url;
+document.getElementById(‘previewWrap’).style.display = ‘block’;
+v.onloadedmetadata = () => {
+document.getElementById(‘infoGrid’).style.display = ‘grid’;
+document.getElementById(‘srcSize’).textContent = `${v.videoWidth}×${v.videoHeight}`;
+document.getElementById(‘srcDur’).textContent = fmt(v.duration);
+document.getElementById(‘srcFSize’).textContent = fmtB(file.size);
+document.getElementById(‘stretchBtn’).disabled = false;
+};
+}
 
-function fmt(s){const m=Math.floor(s/60),sec=Math.floor(s%60);return`${m}:${sec.toString().padStart(2,'0')}`;}
-function fmtB(b){return b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(1)+' MB';}
-function showStatus(msg,type){const b=document.getElementById('statusBox');b.textContent=msg;b.className='status-box status-'+type;b.style.display=msg?'block':'none';}
+async function startStretch() {
+if (!srcFile) return;
+const btn = document.getElementById(‘stretchBtn’);
+btn.disabled = true; btn.textContent = ‘⏳ Обробка…’;
+document.getElementById(‘resultSection’).style.display = ‘none’;
+showStatus(’’,‘ok’);
 
-function handleFile(input){
-  const file=input.files[0];if(!file)return;
-  srcFile=file;outputBlob=null;
-  document.getElementById('saveSection').style.display='none';
-  document.getElementById('progressCard').style.display='none';
-  showStatus('','ok');
-  const url=URL.createObjectURL(file);
-  const v=document.getElementById('srcVideo');
-  v.src=url;
-  document.getElementById('previewWrap').style.display='block';
-  v.onloadedmetadata=()=>{
-    document.getElementById('infoGrid').style.display='grid';
-    document.getElementById('srcSize').textContent=`${v.videoWidth}×${v.videoHeight}`;
-    document.getElementById('srcDur').textContent=fmt(v.duration);
-    document.getElementById('srcFSize').textContent=fmtB(file.size);
-    document.getElementById('stretchBtn').disabled=false;
+const pc = document.getElementById(‘progressCard’);
+const pb = document.getElementById(‘progressBar’);
+const pt = document.getElementById(‘progressText’);
+pc.style.display = ‘block’;
+
+try {
+if (!window.MediaRecorder) throw new Error(‘Потрібен Safari 14.5 або новіший’);
+
+```
+const srcVid = document.getElementById('srcVideo');
+const canvas = document.getElementById('canvas');
+canvas.width = TW; canvas.height = TH;
+const ctx = canvas.getContext('2d');
+
+const mimes = [
+  'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+  'video/mp4;codecs=avc1',
+  'video/mp4',
+  'video/webm;codecs=vp9',
+  'video/webm;codecs=vp8',
+  'video/webm',
+];
+let mimeType = '';
+for (const m of mimes) { if (MediaRecorder.isTypeSupported(m)) { mimeType = m; break; } }
+if (!mimeType) throw new Error('Кодек не підтримується на цьому пристрої');
+
+const stream = canvas.captureStream(30);
+try {
+  const aCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const src = aCtx.createMediaElementSource(srcVid);
+  const dest = aCtx.createMediaStreamDestination();
+  src.connect(dest); src.connect(aCtx.destination);
+  dest.stream.getAudioTracks().forEach(t => stream.addTrack(t));
+} catch(e) {}
+
+const chunks = [];
+const rec = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 25_000_000 });
+rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+const duration = srcVid.duration;
+
+await new Promise((resolve, reject) => {
+  rec.onstop = resolve;
+  rec.onerror = e => reject(e.error || new Error('Помилка запису'));
+  rec.start(200);
+  srcVid.currentTime = 0;
+  srcVid.play();
+  const draw = () => {
+    if (srcVid.paused || srcVid.ended) return;
+    ctx.drawImage(srcVid, 0, 0, TW, TH);
+    requestAnimationFrame(draw);
   };
+  requestAnimationFrame(draw);
+  const timer = setInterval(() => {
+    const pct = Math.min((srcVid.currentTime / duration) * 100, 99);
+    pb.style.width = pct + '%';
+    pt.textContent = `Обробка: ${pct.toFixed(0)}% · ${fmt(srcVid.currentTime)} / ${fmt(duration)}`;
+  }, 300);
+  srcVid.onended = () => {
+    clearInterval(timer); pb.style.width = '100%'; pt.textContent = 'Завершення…';
+    setTimeout(() => rec.stop(), 600);
+  };
+  srcVid.onerror = () => { clearInterval(timer); reject(new Error('Помилка читання відео')); };
+});
+
+const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+const blob = new Blob(chunks, { type: mimeType });
+const url = URL.createObjectURL(blob);
+
+const dlBtn = document.getElementById('dlBtn');
+dlBtn.href = url;
+dlBtn.download = `stretched_2732x2048.${ext}`;
+document.getElementById('resultInfo').textContent =
+  `${fmtB(blob.size)} · ${ext.toUpperCase()} · 2732×2048`;
+
+pc.style.display = 'none';
+const rs = document.getElementById('resultSection');
+rs.style.display = 'flex';
+rs.scrollIntoView({ behavior: 'smooth' });
+```
+
+} catch(err) {
+pc.style.display = ‘none’;
+showStatus(’❌ ’ + err.message, ‘err’);
+console.error(err);
 }
-
-async function startStretch(){
-  if(!srcFile)return;
-  const btn=document.getElementById('stretchBtn');
-  btn.disabled=true;btn.textContent='⏳ Обробка…';
-  document.getElementById('saveSection').style.display='none';
-  showStatus('','ok');
-  const pc=document.getElementById('progressCard');
-  const pb=document.getElementById('progressBar');
-  const pt=document.getElementById('progressText');
-  pc.style.display='block';
-
-  try{
-    if(!window.MediaRecorder)throw new Error('MediaRecorder не підтримується. Потрібен Safari 14.5+');
-    const srcVid=document.getElementById('srcVideo');
-    const canvas=document.getElementById('canvas');
-    canvas.width=TW;canvas.height=TH;
-    const ctx=canvas.getContext('2d');
-
-    const mimes=[
-      'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
-      'video/mp4;codecs=avc1',
-      'video/mp4',
-      'video/webm;codecs=vp9',
-      'video/webm;codecs=vp8',
-      'video/webm',
-    ];
-    let mimeType='';
-    for(const m of mimes){if(MediaRecorder.isTypeSupported(m)){mimeType=m;break;}}
-    if(!mimeType)throw new Error('Жоден відеокодек не підтримується на цьому пристрої');
-
-    const stream=canvas.captureStream(30);
-
-    try{
-      const aCtx=new(window.AudioContext||window.webkitAudioContext)();
-      const src=aCtx.createMediaElementSource(srcVid);
-      const dest=aCtx.createMediaStreamDestination();
-      src.connect(dest);src.connect(aCtx.destination);
-      dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));
-    }catch(e){}
-
-    const chunks=[];
-    const rec=new MediaRecorder(stream,{mimeType,videoBitsPerSecond:25000000});
-    rec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
-    const duration=srcVid.duration;
-
-    await new Promise((resolve,reject)=>{
-      rec.onstop=resolve;
-      rec.onerror=e=>reject(e.error||new Error('MediaRecorder error'));
-      rec.start(200);
-      srcVid.currentTime=0;
-      srcVid.play();
-      const draw=()=>{if(srcVid.paused||srcVid.ended)return;ctx.drawImage(srcVid,0,0,TW,TH);requestAnimationFrame(draw);};
-      requestAnimationFrame(draw);
-      const timer=setInterval(()=>{
-        const pct=Math.min((srcVid.currentTime/duration)*100,99);
-        pb.style.width=pct+'%';
-        pt.textContent=`Обробка: ${pct.toFixed(0)}% · ${fmt(srcVid.currentTime)} / ${fmt(duration)}`;
-      },300);
-      srcVid.onended=()=>{
-        clearInterval(timer);pb.style.width='100%';pt.textContent='Завершення…';
-        setTimeout(()=>rec.stop(),600);
-      };
-      srcVid.onerror=()=>{clearInterval(timer);reject(new Error('Помилка читання відео'));};
-    });
-
-    const ext=mimeType.includes('mp4')?'mp4':'webm';
-    outputBlob=new Blob(chunks,{type:mimeType});
-
-    const resultUrl=URL.createObjectURL(outputBlob);
-    const rv=document.getElementById('resultVideo');
-    rv.src=resultUrl;
-    document.getElementById('resultInfo').textContent=
-      `Розмір: ${fmtB(outputBlob.size)} · Формат: ${ext.toUpperCase()} · 2732×2048`;
-
-    pc.style.display='none';
-    document.getElementById('saveSection').style.display='block';
-    document.getElementById('saveSection').scrollIntoView({behavior:'smooth'});
-
-  }catch(err){
-    pc.style.display='none';
-    showStatus('❌ '+err.message,'err');
-    console.error(err);
-  }
-  btn.disabled=false;
-  btn.textContent='🚀 Розтягнути до 2732×2048';
+btn.disabled = false;
+btn.textContent = ‘🚀 Розтягнути до 2732×2048’;
 }
 </script>
 
