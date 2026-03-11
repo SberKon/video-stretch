@@ -6,572 +6,249 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VideoStretch">
+<meta name="theme-color" content="#0a0a0f">
 <title>Video Stretch 2732×2048</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+:root{--bg:#0a0a0f;--surface:#111118;--card:#16161f;--accent:#7fff6e;--accent2:#6e8fff;--text:#e8e8f0;--muted:#555566;--border:#222233;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:48px 18px 80px;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 15% 20%,rgba(110,143,255,.09) 0%,transparent 65%),radial-gradient(ellipse 50% 35% at 85% 80%,rgba(127,255,110,.07) 0%,transparent 65%);pointer-events:none;z-index:0;}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.013) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.013) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;width:100%;max-width:640px;display:flex;flex-direction:column;gap:18px;}
+header{text-align:center;padding:6px 0 10px;}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(127,255,110,.07);border:1px solid rgba(127,255,110,.18);border-radius:100px;padding:5px 14px;font-size:11px;font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:.08em;margin-bottom:16px;}
+.badge::before{content:'';width:7px;height:7px;background:var(--accent);border-radius:50%;display:inline-block;}
+h1{font-size:clamp(34px,8vw,54px);font-weight:800;line-height:1.0;letter-spacing:-.025em;background:linear-gradient(150deg,#fff,rgba(255,255,255,.5));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.subtitle{margin-top:9px;font-size:13px;color:var(--muted);font-family:'Space Mono',monospace;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);}
+.pick-btn{width:100%;background:none;border:2px dashed var(--border);border-radius:14px;padding:38px 20px;cursor:pointer;transition:all .22s;display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text);}
+.pick-btn:active{border-color:var(--accent);background:rgba(127,255,110,.035);transform:scale(.99);}
+.pick-icon{width:58px;height:58px;background:linear-gradient(135deg,rgba(110,143,255,.18),rgba(127,255,110,.15));border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:26px;}
+.pick-label{font-size:17px;font-weight:700;}
+.pick-hint{font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;}
+#fileInput{display:none;}
+.preview-box{display:none;margin-top:14px;border-radius:11px;overflow:hidden;background:#000;}
+.preview-box video{width:100%;max-height:185px;object-fit:contain;display:block;}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px;}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;}
+.chip-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:3px;}
+.chip-val{font-size:14px;font-weight:700;font-family:'Space Mono',monospace;}
+.chip-val.green{color:var(--accent);}
+.prog-card{display:none;}
+.prog-label{font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;text-align:center;margin-bottom:9px;}
+.prog-track{height:5px;background:var(--surface);border-radius:100px;overflow:hidden;}
+.prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:100px;transition:width .25s;}
+.status{display:none;border-radius:11px;padding:12px 15px;font-size:12px;font-family:'Space Mono',monospace;text-align:center;}
+.status.ok{background:rgba(127,255,110,.06);border:1px solid rgba(127,255,110,.2);color:var(--accent);}
+.status.err{background:rgba(255,80,80,.06);border:1px solid rgba(255,80,80,.2);color:#ff7070;}
+.btn{width:100%;padding:17px;border:none;border-radius:14px;font-size:16px;font-weight:800;font-family:'Syne',sans-serif;cursor:pointer;transition:all .18s;letter-spacing:.01em;}
+.btn-stretch{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#000;}
+.btn-stretch:active{transform:scale(.98);opacity:.88;}
+.btn-stretch:disabled{background:var(--border);color:var(--muted);cursor:default;}
 
-:root {
-–bg: #0a0a0f;
-–surface: #111118;
-–card: #16161f;
-–accent: #7fff6e;
-–accent2: #6e8fff;
-–text: #e8e8f0;
-–muted: #555566;
-–border: #222233;
-}
+/* RESULT */
+.result{display:none;flex-direction:column;gap:14px;}
+.result-video-card{background:var(–card);border:2px solid rgba(127,255,110,.25);border-radius:20px;padding:20px;position:relative;overflow:hidden;}
+.result-video-card::before{content:’’;position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(127,255,110,.15),transparent);}
+.result-title{font-size:17px;font-weight:800;color:var(–accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.result-video-wrap{border-radius:12px;overflow:hidden;background:#000;border:1px solid rgba(127,255,110,.15);}
+.result-video-wrap video{width:100%;max-height:240px;object-fit:contain;display:block;}
+.save-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:22px;background:linear-gradient(135deg,var(–accent) 0%,#4eff3a 100%);border:none;border-radius:16px;cursor:pointer;font-family:‘Syne’,sans-serif;color:#000;box-shadow:0 0 50px rgba(127,255,110,.25);transition:all .2s;width:100%;}
+.save-btn:active{transform:scale(.97);box-shadow:0 0 20px rgba(127,255,110,.12);}
+.save-btn-main{font-size:19px;font-weight:800;display:flex;align-items:center;gap:10px;}
+.save-btn-sub{font-size:11px;font-family:‘Space Mono’,monospace;opacity:.65;}
+#resultInfo{font-size:11px;color:var(–muted);font-family:‘Space Mono’,monospace;text-align:center;margin-top:4px;}
 
-- { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-body {
-background: var(–bg);
-color: var(–text);
-font-family: ‘Syne’, sans-serif;
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-align-items: center;
-padding: 40px 20px 60px;
-position: relative;
-overflow-x: hidden;
-}
-
-body::before {
-content: ‘’;
-position: fixed;
-inset: 0;
-background:
-radial-gradient(ellipse 60% 40% at 10% 20%, rgba(110,143,255,0.08) 0%, transparent 70%),
-radial-gradient(ellipse 50% 35% at 90% 80%, rgba(127,255,110,0.07) 0%, transparent 70%);
-pointer-events: none;
-z-index: 0;
-}
-
-.grid-bg {
-position: fixed;
-inset: 0;
-background-image:
-linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-background-size: 40px 40px;
-pointer-events: none;
-z-index: 0;
-}
-
-.wrapper {
-position: relative;
-z-index: 1;
-width: 100%;
-max-width: 700px;
-display: flex;
-flex-direction: column;
-gap: 28px;
-}
-
-header {
-text-align: center;
-padding: 10px 0 4px;
-}
-
-.badge {
-display: inline-flex;
-align-items: center;
-gap: 6px;
-background: rgba(127,255,110,0.08);
-border: 1px solid rgba(127,255,110,0.2);
-border-radius: 100px;
-padding: 5px 14px;
-font-size: 11px;
-font-family: ‘Space Mono’, monospace;
-color: var(–accent);
-letter-spacing: 0.08em;
-margin-bottom: 18px;
-}
-
-.badge::before { content: ‘●’; font-size: 8px; }
-
-h1 {
-font-size: clamp(32px, 8vw, 52px);
-font-weight: 800;
-line-height: 1.05;
-letter-spacing: -0.02em;
-background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.6) 100%);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-}
-
-h1 span {
-background: linear-gradient(135deg, var(–accent) 0%, var(–accent2) 100%);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-}
-
-.subtitle {
-margin-top: 10px;
-font-size: 14px;
-color: var(–muted);
-font-family: ‘Space Mono’, monospace;
-letter-spacing: 0.02em;
-}
-
-.card {
-background: var(–card);
-border: 1px solid var(–border);
-border-radius: 20px;
-padding: 28px;
-position: relative;
-overflow: hidden;
-}
-
-.card::before {
-content: ‘’;
-position: absolute;
-top: 0; left: 0; right: 0;
-height: 1px;
-background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-}
-
-.drop-zone {
-border: 2px dashed var(–border);
-border-radius: 14px;
-padding: 48px 20px;
-text-align: center;
-cursor: pointer;
-transition: all 0.3s ease;
-position: relative;
-overflow: hidden;
-}
-
-.drop-zone:active {
-border-color: var(–accent);
-background: rgba(127,255,110,0.04);
-transform: scale(0.99);
-}
-
-.drop-icon {
-width: 64px;
-height: 64px;
-margin: 0 auto 16px;
-background: linear-gradient(135deg, rgba(110,143,255,0.15), rgba(127,255,110,0.15));
-border-radius: 18px;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 30px;
-}
-
-.drop-zone h3 {
-font-size: 18px;
-font-weight: 700;
-margin-bottom: 6px;
-}
-
-.drop-zone p {
-font-size: 13px;
-color: var(–muted);
-font-family: ‘Space Mono’, monospace;
-}
-
-#fileInput { display: none; }
-
-.info-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 12px;
-}
-
-.info-item {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 12px;
-padding: 14px 16px;
-}
-
-.info-label {
-font-size: 10px;
-text-transform: uppercase;
-letter-spacing: 0.1em;
-color: var(–muted);
-font-family: ‘Space Mono’, monospace;
-margin-bottom: 4px;
-}
-
-.info-value {
-font-size: 15px;
-font-weight: 700;
-color: var(–text);
-font-family: ‘Space Mono’, monospace;
-}
-
-.info-value.highlight { color: var(–accent); }
-
-.preview-wrap {
-position: relative;
-border-radius: 12px;
-overflow: hidden;
-background: #000;
-display: none;
-}
-
-video {
-width: 100%;
-height: auto;
-display: block;
-max-height: 200px;
-object-fit: contain;
-}
-
-.preview-label {
-position: absolute;
-top: 8px; left: 8px;
-background: rgba(0,0,0,0.7);
-color: var(–muted);
-font-size: 10px;
-font-family: ‘Space Mono’, monospace;
-padding: 3px 8px;
-border-radius: 6px;
-letter-spacing: 0.06em;
-}
-
-.progress-wrap {
-display: none;
-flex-direction: column;
-gap: 10px;
-}
-
-.progress-bar-bg {
-height: 6px;
-background: var(–surface);
-border-radius: 100px;
-overflow: hidden;
-}
-
-.progress-bar {
-height: 100%;
-width: 0%;
-background: linear-gradient(90deg, var(–accent2), var(–accent));
-border-radius: 100px;
-transition: width 0.2s ease;
-}
-
-.progress-text {
-font-size: 12px;
-color: var(–muted);
-font-family: ‘Space Mono’, monospace;
-text-align: center;
-}
-
-.btn {
-width: 100%;
-padding: 18px;
-border: none;
-border-radius: 14px;
-font-size: 16px;
-font-weight: 700;
-font-family: ‘Syne’, sans-serif;
-cursor: pointer;
-transition: all 0.2s ease;
-position: relative;
-overflow: hidden;
-letter-spacing: 0.02em;
-}
-
-.btn-primary {
-background: linear-gradient(135deg, var(–accent2) 0%, var(–accent) 100%);
-color: #000;
-}
-
-.btn-primary:active { transform: scale(0.98); opacity: 0.9; }
-.btn-primary:disabled {
-background: var(–border);
-color: var(–muted);
-cursor: default;
-}
-
-.btn-save {
-background: var(–surface);
-color: var(–accent);
-border: 1px solid rgba(127,255,110,0.3);
-display: none;
-}
-
-.btn-save:active { transform: scale(0.98); background: rgba(127,255,110,0.08); }
-
-.status-box {
-background: rgba(127,255,110,0.06);
-border: 1px solid rgba(127,255,110,0.2);
-border-radius: 12px;
-padding: 14px 18px;
-font-size: 13px;
-font-family: ‘Space Mono’, monospace;
-color: var(–accent);
-text-align: center;
-display: none;
-}
-
-.status-box.error {
-background: rgba(255,80,80,0.06);
-border-color: rgba(255,80,80,0.2);
-color: #ff8080;
-}
-
-.note {
-font-size: 11px;
-color: var(–muted);
-font-family: ‘Space Mono’, monospace;
-text-align: center;
-line-height: 1.6;
-padding: 0 10px;
-}
-
-.note a { color: var(–accent2); text-decoration: none; }
-
-canvas { display: none; }
-
-.arrow { color: var(–muted); font-size: 12px; display: flex; align-items: center; justify-content: center; }
-
-@keyframes pulse {
-0%, 100% { opacity: 1; }
-50% { opacity: 0.5; }
-}
-.processing { animation: pulse 1.5s infinite; }
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.pulsing{animation:pulse 1.4s infinite;}
+canvas{display:none;}
+.note{font-size:11px;color:var(–muted);font-family:‘Space Mono’,monospace;text-align:center;line-height:1.7;}
 </style>
 
 </head>
 <body>
-
 <div class="grid-bg"></div>
+<div class="wrap">
 
-<div class="wrapper">
   <header>
     <div class="badge">iPad · Safari · Video Tool</div>
     <h1>Stretch<br><span>2732×2048</span></h1>
     <p class="subtitle">// video resolution stretcher</p>
   </header>
 
-  <!-- Step 1: Pick video -->
-
   <div class="card">
-    <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
-      <div class="drop-icon">🎬</div>
-      <h3>Обрати відео</h3>
-      <p>Натисни щоб відкрити Фото</p>
-    </div>
+    <button class="pick-btn" onclick="document.getElementById('fileInput').click()">
+      <div class="pick-icon">🎬</div>
+      <div class="pick-label">Обрати відео</div>
+      <div class="pick-hint">натисни — відкриється бібліотека Фото</div>
+    </button>
     <input type="file" id="fileInput" accept="video/*" onchange="handleFile(this)">
-  </div>
-
-  <!-- Video preview + info -->
-
-  <div class="card" id="infoCard" style="display:none">
-    <div class="preview-wrap" id="previewWrap">
+    <div class="preview-box" id="previewBox">
       <video id="srcVideo" playsinline muted controls></video>
-      <div class="preview-label">ORIGINAL</div>
     </div>
-    <div style="height:16px"></div>
-    <div class="info-grid">
-      <div class="info-item">
-        <div class="info-label">Оригінал</div>
-        <div class="info-value" id="srcSize">—</div>
-      </div>
-      <div class="info-item">
-        <div class="info-label">Результат</div>
-        <div class="info-value highlight">2732×2048</div>
-      </div>
-      <div class="info-item">
-        <div class="info-label">Тривалість</div>
-        <div class="info-value" id="srcDuration">—</div>
-      </div>
-      <div class="info-item">
-        <div class="info-label">Розмір файлу</div>
-        <div class="info-value" id="srcFileSize">—</div>
-      </div>
+    <div class="chips" id="chips" style="display:none">
+      <div class="chip"><div class="chip-label">Оригінал</div><div class="chip-val" id="cSrc">—</div></div>
+      <div class="chip"><div class="chip-label">Результат</div><div class="chip-val green">2732×2048</div></div>
+      <div class="chip"><div class="chip-label">Тривалість</div><div class="chip-val" id="cDur">—</div></div>
+      <div class="chip"><div class="chip-label">Розмір</div><div class="chip-val" id="cSize">—</div></div>
     </div>
   </div>
 
-  <!-- Progress -->
-
-  <div class="card" id="progressCard" style="display:none">
-    <div class="progress-wrap" id="progressWrap" style="display:flex">
-      <div class="progress-text processing" id="progressText">Ініціалізація…</div>
-      <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
-    </div>
+  <div class="card prog-card" id="progCard">
+    <div class="prog-label pulsing" id="progLabel">Ініціалізація…</div>
+    <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
   </div>
 
-  <!-- Status -->
+  <div class="status" id="status"></div>
 
-  <div class="status-box" id="statusBox"></div>
-
-  <!-- Buttons -->
-
-  <button class="btn btn-primary" id="stretchBtn" onclick="startStretch()" disabled>
+  <button class="btn btn-stretch" id="stretchBtn" onclick="startStretch()" disabled>
     🚀 Розтягнути до 2732×2048
   </button>
 
-  <button class="btn btn-save" id="saveBtn" onclick="saveVideo()">
-    💾 Зберегти в Фото
-  </button>
+  <!-- RESULT -->
 
-  <p class="note">
-    Обробка відбувається прямо на пристрої.<br>
-    Для збереження в Фото — натисни «Зберегти» і<br>
-    потім <strong>Зберегти відео</strong> у вікні завантаження Safari.<br><br>
-    <a href="#">⚠️ Великі відео можуть потребувати часу</a>
-  </p>
+  <div class="result" id="result">
+    <div class="result-video-card">
+      <div class="result-title">✅ Відео готове!</div>
+      <div class="result-video-wrap">
+        <video id="resultVideo" playsinline controls webkit-playsinline x-webkit-airplay="allow"></video>
+      </div>
+      <div id="resultInfo"></div>
+    </div>
+    <button class="save-btn" onclick="saveVideo()">
+      <div class="save-btn-main">💾 Зберегти відео</div>
+      <div class="save-btn-sub">натисни щоб завантажити у Фото</div>
+    </button>
+  </div>
+
+  <p class="note">Обробка відбувається на пристрої · нікуди не завантажується</p>
 </div>
 
 <canvas id="canvas"></canvas>
 
 <script>
-let srcFile = null;
-let outputBlob = null;
-const TARGET_W = 2732;
-const TARGET_H = 2048;
+let srcFile = null, outputBlob = null;
+const TW = 2732, TH = 2048;
+
+const $ = id => document.getElementById(id);
+const fmt = s => Math.floor(s/60) + ':' + String(Math.floor(s%60)).padStart(2,'0');
+const fmtB = b => b < 1048576 ? (b/1024).toFixed(1)+' KB' : (b/1048576).toFixed(1)+' MB';
+
+function showStatus(msg, type) {
+  const el = $('status');
+  el.textContent = msg;
+  el.className = 'status ' + type;
+  el.style.display = msg ? 'block' : 'none';
+}
 
 function handleFile(input) {
   const file = input.files[0];
   if (!file) return;
-  srcFile = file;
-  outputBlob = null;
-
-  document.getElementById('saveBtn').style.display = 'none';
-  document.getElementById('progressCard').style.display = 'none';
+  srcFile = file; outputBlob = null;
+  $('result').style.display = 'none';
+  $('progCard').style.display = 'none';
   showStatus('', '');
-
   const url = URL.createObjectURL(file);
-  const video = document.getElementById('srcVideo');
-  video.src = url;
-
-  video.onloadedmetadata = () => {
-    document.getElementById('infoCard').style.display = 'block';
-    document.getElementById('previewWrap').style.display = 'block';
-    document.getElementById('srcSize').textContent = `${video.videoWidth}×${video.videoHeight}`;
-    document.getElementById('srcDuration').textContent = formatTime(video.duration);
-    document.getElementById('srcFileSize').textContent = formatBytes(file.size);
-    document.getElementById('stretchBtn').disabled = false;
+  const v = $('srcVideo');
+  v.src = url;
+  $('previewBox').style.display = 'block';
+  v.onloadedmetadata = () => {
+    $('chips').style.display = 'grid';
+    $('cSrc').textContent = v.videoWidth + '×' + v.videoHeight;
+    $('cDur').textContent = fmt(v.duration);
+    $('cSize').textContent = fmtB(file.size);
+    $('stretchBtn').disabled = false;
   };
-}
-
-function formatTime(s) {
-  const m = Math.floor(s / 60);
-  const sec = Math.floor(s % 60);
-  return `${m}:${sec.toString().padStart(2,'0')}`;
-}
-
-function formatBytes(b) {
-  if (b < 1024*1024) return (b/1024).toFixed(1)+' KB';
-  return (b/1024/1024).toFixed(1)+' MB';
-}
-
-function showStatus(msg, type) {
-  const box = document.getElementById('statusBox');
-  box.textContent = msg;
-  box.className = 'status-box' + (type === 'error' ? ' error' : '');
-  box.style.display = msg ? 'block' : 'none';
 }
 
 async function startStretch() {
   if (!srcFile) return;
-
-  const btn = document.getElementById('stretchBtn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Обробка…';
-  document.getElementById('saveBtn').style.display = 'none';
+  const btn = $('stretchBtn');
+  btn.disabled = true; btn.textContent = '⏳ Обробка…';
+  $('result').style.display = 'none';
   showStatus('', '');
-
-  const progressCard = document.getElementById('progressCard');
-  const progressBar = document.getElementById('progressBar');
-  const progressText = document.getElementById('progressText');
-  progressCard.style.display = 'block';
+  $('progCard').style.display = 'block';
+  const fill = $('progFill');
+  const label = $('progLabel');
 
   try {
-    // Check MediaRecorder support
-    if (!window.MediaRecorder) {
-      throw new Error('MediaRecorder не підтримується. Спробуй Safari 14.5+');
-    }
+    if (!window.MediaRecorder) throw new Error('MediaRecorder не підтримується. Потрібен Safari 14.5+');
 
-    const video = document.getElementById('srcVideo');
-    const canvas = document.getElementById('canvas');
-    canvas.width = TARGET_W;
-    canvas.height = TARGET_H;
+    const srcVid = $('srcVideo');
+    const canvas = $('canvas');
+    canvas.width = TW; canvas.height = TH;
     const ctx = canvas.getContext('2d');
 
-    // Pick supported MIME
     const mimes = [
+      'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
       'video/mp4;codecs=avc1',
       'video/mp4',
       'video/webm;codecs=vp9',
       'video/webm;codecs=vp8',
       'video/webm',
     ];
-    let mimeType = '';
-    for (const m of mimes) {
-      if (MediaRecorder.isTypeSupported(m)) { mimeType = m; break; }
-    }
-    if (!mimeType) throw new Error('Жоден відеоформат не підтримується на цьому пристрої');
+    const mime = mimes.find(m => MediaRecorder.isTypeSupported(m));
+    if (!mime) throw new Error('Жоден відеокодек не підтримується на цьому пристрої');
 
     const stream = canvas.captureStream(30);
-
-    // Try to add audio
     try {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const src = audioCtx.createMediaElementSource(video);
-      const dest = audioCtx.createMediaStreamDestination();
-      src.connect(dest);
-      src.connect(audioCtx.destination);
-      dest.stream.getAudioTracks().forEach(t => stream.addTrack(t));
-    } catch(e) { /* audio optional */ }
+      const ac = new (window.AudioContext || window.webkitAudioContext)();
+      const src = ac.createMediaElementSource(srcVid);
+      const dst = ac.createMediaStreamDestination();
+      src.connect(dst); src.connect(ac.destination);
+      dst.stream.getAudioTracks().forEach(t => stream.addTrack(t));
+    } catch(e) {}
 
     const chunks = [];
-    const rec = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 20_000_000 });
+    const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 25000000 });
     rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+    const dur = srcVid.duration;
 
-    const duration = video.duration;
-
-    await new Promise((resolve, reject) => {
-      rec.onstop = resolve;
-      rec.onerror = e => reject(e.error || new Error('MediaRecorder error'));
-
-      rec.start(100);
-      video.currentTime = 0;
-
-      video.onplay = null;
-      video.play();
-
-      const drawFrame = () => {
-        if (video.paused || video.ended) return;
-        ctx.drawImage(video, 0, 0, TARGET_W, TARGET_H);
-        requestAnimationFrame(drawFrame);
+    await new Promise((res, rej) => {
+      rec.onstop = res;
+      rec.onerror = e => rej(e.error || new Error('MediaRecorder error'));
+      rec.start(200);
+      srcVid.currentTime = 0;
+      srcVid.play();
+      const draw = () => {
+        if (srcVid.paused || srcVid.ended) return;
+        ctx.drawImage(srcVid, 0, 0, TW, TH);
+        requestAnimationFrame(draw);
       };
-      requestAnimationFrame(drawFrame);
-
-      // Progress tracker
+      requestAnimationFrame(draw);
       const timer = setInterval(() => {
-        const pct = Math.min((video.currentTime / duration) * 100, 99);
-        progressBar.style.width = pct + '%';
-        progressText.textContent = `Обробка: ${pct.toFixed(0)}% · ${formatTime(video.currentTime)} / ${formatTime(duration)}`;
-      }, 300);
-
-      video.onended = () => {
+        const p = Math.min((srcVid.currentTime / dur) * 100, 99);
+        fill.style.width = p + '%';
+        label.textContent = 'Обробка: ' + p.toFixed(0) + '% · ' + fmt(srcVid.currentTime) + ' / ' + fmt(dur);
+      }, 250);
+      srcVid.onended = () => {
         clearInterval(timer);
-        progressBar.style.width = '100%';
-        progressText.textContent = 'Завершення запису…';
-        // small delay to flush
-        setTimeout(() => rec.stop(), 400);
+        fill.style.width = '100%';
+        label.textContent = 'Завершення…';
+        setTimeout(() => rec.stop(), 700);
       };
-
-      video.onerror = () => { clearInterval(timer); reject(new Error('Помилка відтворення відео')); };
+      srcVid.onerror = () => { clearInterval(timer); rej(new Error('Помилка читання відео')); };
     });
 
-    const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
-    outputBlob = new Blob(chunks, { type: mimeType });
+    const ext = mime.includes('mp4') ? 'mp4' : 'webm';
+    outputBlob = new Blob(chunks, { type: mime });
 
-    progressCard.style.display = 'none';
-    showStatus(`✅ Готово! Розмір: ${formatBytes(outputBlob.size)}`, 'ok');
-    document.getElementById('saveBtn').style.display = 'block';
+    const resultUrl = URL.createObjectURL(outputBlob);
+    const rv = $('resultVideo');
+    rv.src = resultUrl;
+    $('resultInfo').textContent = `Розмір: ${fmtB(outputBlob.size)} · Формат: ${ext.toUpperCase()} · 2732×2048`;
+
+    $('progCard').style.display = 'none';
+    $('result').style.display = 'flex';
+    $('result').scrollIntoView({ behavior: 'smooth' });
 
   } catch(err) {
-    progressCard.style.display = 'none';
-    showStatus('❌ ' + err.message, 'error');
+    $('progCard').style.display = 'none';
+    showStatus('❌ ' + err.message, 'err');
     console.error(err);
   }
 
@@ -580,17 +257,13 @@ async function startStretch() {
 }
 
 function saveVideo() {
-  if (!outputBlob) return;
-  const ext = outputBlob.type.includes('mp4') ? 'mp4' : 'webm';
-  const url = URL.createObjectURL(outputBlob);
+  if (!outputBlob) { showStatus('Спочатку оброби відео', 'err'); return; }
+  const mime = outputBlob.type;
+  const ext = mime.includes('mp4') ? 'mp4' : 'webm';
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `stretched_2732x2048.${ext}`;
-  document.body.appendChild(a);
+  a.href = URL.createObjectURL(outputBlob);
+  a.download = 'stretched_2732x2048.' + ext;
   a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 5000);
-  showStatus('📲 Файл завантажується. Натисни "Зберегти в Фото" у меню Safari.', 'ok');
 }
 </script>
 
