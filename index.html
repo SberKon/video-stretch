@@ -211,27 +211,46 @@ async function startStretch() {
     await new Promise((res, rej) => {
       rec.onstop = res;
       rec.onerror = e => rej(e.error || new Error('MediaRecorder error'));
-      rec.start(200);
+
       srcVid.currentTime = 0;
-      srcVid.play();
-      const draw = () => {
-        if (srcVid.paused || srcVid.ended) return;
-        ctx.drawImage(srcVid, 0, 0, TW, TH);
+
+      // Малюємо перший кадр на canvas ДО старту запису
+      srcVid.onseeked = () => {
+        ctx.drawImage(srcVid, 0, 0, TW, TH); // перший кадр вже є на canvas
+
+        // Тепер стартуємо запис — canvas вже не чорний
+        rec.start(200);
+
+        srcVid.play();
+
+        let drawing = true;
+        const draw = () => {
+          if (!drawing) return;
+          if (!srcVid.paused && !srcVid.ended) {
+            ctx.drawImage(srcVid, 0, 0, TW, TH);
+          }
+          requestAnimationFrame(draw);
+        };
         requestAnimationFrame(draw);
+
+        const timer = setInterval(() => {
+          const p = Math.min((srcVid.currentTime / dur) * 100, 99);
+          fill.style.width = p + '%';
+          label.textContent = 'Обробка: ' + p.toFixed(0) + '% · ' + fmt(srcVid.currentTime) + ' / ' + fmt(dur);
+        }, 250);
+
+        srcVid.onended = () => {
+          clearInterval(timer);
+          fill.style.width = '100%';
+          label.textContent = 'Завершення…';
+          // Малюємо останній кадр ще раз і одразу зупиняємо — без затримки
+          ctx.drawImage(srcVid, 0, 0, TW, TH);
+          drawing = false;
+          rec.stop();
+        };
+
+        srcVid.onerror = () => { clearInterval(timer); drawing = false; rej(new Error('Помилка читання відео')); };
       };
-      requestAnimationFrame(draw);
-      const timer = setInterval(() => {
-        const p = Math.min((srcVid.currentTime / dur) * 100, 99);
-        fill.style.width = p + '%';
-        label.textContent = 'Обробка: ' + p.toFixed(0) + '% · ' + fmt(srcVid.currentTime) + ' / ' + fmt(dur);
-      }, 250);
-      srcVid.onended = () => {
-        clearInterval(timer);
-        fill.style.width = '100%';
-        label.textContent = 'Завершення…';
-        setTimeout(() => rec.stop(), 700);
-      };
-      srcVid.onerror = () => { clearInterval(timer); rej(new Error('Помилка читання відео')); };
     });
 
     const ext = mime.includes('mp4') ? 'mp4' : 'webm';
